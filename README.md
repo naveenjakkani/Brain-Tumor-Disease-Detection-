@@ -1,27 +1,131 @@
-# Brain-Tumor-Disease-Detection-
-A deep learning-based medical imaging system using Convolutional Neural Networks (CNN) to detect and classify brain tumors from MRI scans in real time through an interactive web interface.
-# 🧠 Brain Tumor Detection System Using Deep Learning
+# Brain Tumor Detection System
 
-An AI-powered medical imaging web application built with **Convolutional Neural Networks (CNN)** to detect and classify brain tumors from MRI scans in real time.
+A Python-based web application that detects brain tumors from MRI images using machine learning. The project uses handcrafted image features (histogram, texture, edge) and a Random Forest classifier to categorize MRI scans into four classes.
 
-## 📌 Overview
-Early and accurate detection of brain tumors from Magnetic Resonance Imaging (MRI) is vital for timely clinical intervention. This project automates MRI scan screening by training a deep learning classifier to distinguish between healthy brain scans and tumor categories (such as Glioma, Meningioma, and Pituitary tumors), wrapped in an accessible web interface for instant prediction.
+## Key Features
 
-## ✨ Key Features
-- **Automated MRI Classification:** Analyzes brain MRI scans using a trained CNN / Transfer Learning model to detect tumor presence and subtype.
-- **Image Preprocessing Pipeline:** Applies resizing, normalization, and noise reduction to standardize raw MRI inputs before inference.
-- **Real-Time Prediction & Confidence Scores:** Outputs predicted diagnosis along with class probability confidence through a user-friendly UI.
-- **Model Evaluation Metrics:** Includes training/validation accuracy curves, loss plots, and a confusion matrix for diagnostic transparency.
+- Web interface built with Flask
+- MRI image upload and prediction
+- Prediction history tracking
+- Probability distribution chart for model confidence
+- Feature extraction using GLCM, histogram statistics, and edge density
+- Random Forest model trained on a labeled brain tumor dataset
 
-## 🛠️ Tech Stack
-- **Deep Learning:** TensorFlow / Keras or PyTorch *(keep the one used in the repo)*
-- **Computer Vision & Data:** OpenCV, NumPy, Pandas, Scikit-learn
-- **Web Interface:** Flask / Streamlit *(keep the one used in the repo)*
-- **Visualization:** Matplotlib, Seaborn
+## Repository Structure
 
-## 🚀 Getting Started
+- `app.py` - Flask application controlling routes, file upload, and prediction display
+- `train_model.py` - Model training script that extracts features and trains the classifier
+- `utils/feature_extraction.py` - Image preprocessing and feature extraction pipeline
+- `utils/predict.py` - Loads the trained model and scaler to predict new images
+- `templates/` - HTML templates for the web interface
+- `static/` - CSS and JavaScript files for styling and client-side behavior
+- `DataSet_M/` - Expected dataset folders for training and testing images
+- `models/` - Saved model and scaler files
+- `requirements.txt` - Python dependencies
 
-### 1. Clone the repository
+## Technologies Used
+
+- Python 3
+- Flask
+- scikit-learn
+- scikit-image
+- OpenCV
+- NumPy
+- Matplotlib
+- Joblib
+
+## Dataset
+
+The application is designed to use an MRI dataset with the following folder structure:
+
+```
+DataSet_M/
+  Training/
+    glioma_tumor/
+    meningioma_tumor/
+    no_tumor/
+    pituitary_tumor/
+  Testing/
+    glioma_tumor/
+    meningioma_tumor/
+    no_tumor/
+    pituitary_tumor/
+```
+
+Each class folder should contain MRI image files in JPG or PNG format.
+
+## Model and Training
+
+The model is trained using `train_model.py`:
+
+1. Reads images from `DataSet_M/Training/`.
+2. Preprocesses images with Gaussian blur, median filter, CLAHE, and normalization.
+3. Extracts features:
+   - histogram statistics (mean, std, skewness, kurtosis)
+   - GLCM texture features (contrast, dissimilarity, homogeneity, energy, correlation)
+   - edge density from Canny edge detection
+4. Standardizes features with `StandardScaler`
+5. Trains a `RandomForestClassifier`
+6. Saves the trained model and scaler to `models/`
+
+After training, `utils/predict.py` loads the saved model and scaler and uses the same feature extraction pipeline to classify new uploads.
+
+## Installation
+
+1. Clone the repository:
 ```bash
-git clone [https://github.com/naveenjakkani/Brain-Tumor-Detection-System.git](https://github.com/naveenjakkani/Brain-Tumor-Detection-System.git)
-cd Brain-Tumor-Detection-System
+git clone https://github.com/buchakegajanan/Brain-Tumor-Detection-System.git
+cd "Brain Tumor Detection System"
+```
+
+2. Create and activate a Python virtual environment:
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
+
+3. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+## Usage
+
+1. Train the model (if `models/brain_tumor_rf.pkl` does not exist or you want to retrain):
+```bash
+python train_model.py
+```
+
+2. Run the web application:
+```bash
+python app.py
+```
+
+3. Open the browser at:
+```
+http://127.0.0.1:5000
+```
+
+4. Login with:
+- Email: `admin@hospital.com`
+- Password: `admin123`
+
+5. Upload an MRI image to get a prediction.
+
+## Notes
+
+- The project uses only classical machine learning, not deep learning.
+- The current login is a simple mock authentication for demonstration purposes.
+- For production use, secure authentication, upload validation, and dataset privacy measures are required.
+
+## Recommended Improvements
+
+- Add dataset validation and augmentation
+- Add cross-validation and model performance reporting
+- Use a database to store prediction history
+- Remove `venv/` from version control and use `.gitignore`
+- Add unit tests and CI/CD
+
+## License
+
+This repository does not include an explicit license file. Add a license if you plan to share widely.
